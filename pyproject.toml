@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "firebase-rtdb-tools"
+version = "0.1.0"
+description = "Firebase Realtime Database (RTDB) lossless restore toolkit for large backups"
+readme = "README.md"
+authors = [
+    { name = "Berkay Turanci", email = "berkay@nonzeroapps.com" }
+]
+requires-python = ">=3.7"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Database",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "firebase-admin>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/berkayturanci/firebase-rtdb-restore"
+Issues = "https://github.com/berkayturanci/firebase-rtdb-restore/issues"
+
+[project.scripts]
+firebase-rtdb-split = "firebase_rtdb_restore.split_backup:main"
+firebase-rtdb-validate = "firebase_rtdb_restore.validate_chunks:main"
+firebase-rtdb-upload = "firebase_rtdb_restore.upload_chunks:main"
+firebase-rtdb-upload-single = "firebase_rtdb_restore.upload_single_user:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["firebase_rtdb_restore*"]
