@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "exportedAt": "2026-05-30T00:00:00Z",
+    "note": "Synthetic sample backup — safe to commit. Contains no real data."
+  },
+  "users": {
+    "uid_alice": {
+      "profile": { "name": "Alice", "email": "alice@example.com" },
+      "settings": { "theme": "dark", "notifications": true }
+    },
+    "uid_bob": {
+      "profile": { "name": "Bob", "email": "bob@example.com" },
+      "settings": { "theme": "light", "notifications": false }
+    },
+    "uid_carol": {
+      "profile": { "name": "Carol", "email": "carol@example.com" },
+      "items": {
+        "item_1": { "sku": "A-100", "qty": 3 },
+        "item_2": { "sku": "B-200", "qty": 7 }
+      }
+    }
+  },
+  "config": {
+    "appVersion": "1.0.0",
+    "featureFlags": { "betaUpload": false }
+  }
+}

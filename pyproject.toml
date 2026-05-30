@@ -27,6 +27,7 @@ dependencies = [
 dev = [
     "ruff>=0.4.0",
     "build",
+    "twine",
     "pre-commit",
 ]
 

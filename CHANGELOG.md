@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Supply-chain security automation: Dependabot (pip + GitHub Actions), a CodeQL code-scanning workflow, and an OpenSSF Scorecard workflow — all third-party actions pinned to commit SHAs with least-privilege permissions.
+- `examples/` directory with a synthetic `sample-backup.json` and a step-by-step walkthrough (split, validate, tamper-detection, and dry-run upload commands) so users can practice safely without real Firebase data.
+- `make check` target that mirrors the CI gates locally (lint + tests + build + `twine check`); `twine` added to the `dev` extra.
+- Contributor docs: `CONTRIBUTING.md` now documents `pip install -e ".[dev]"`, the full local validation sequence, and the required CI checks; PR template references `make check`.
 - Documentation site release guard that checks the site version signal against `pyproject.toml`.
 - Live GitHub Release badge/link on the documentation site.
 - Favicon, web manifest, canonical URL, Open Graph metadata, and Twitter card metadata for the documentation site.

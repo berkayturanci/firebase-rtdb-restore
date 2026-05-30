@@ -77,6 +77,9 @@ To upload data to your Firebase database:
 
 ## Simple Restore Workflow
 
+> **New here?** Try the whole split → validate flow on safe, synthetic data
+> first — no Firebase project needed. See [`examples/README.md`](examples/README.md).
+
 ### Step 1: Split the giant backup file
 Split the backup JSON into smaller files (default is 1,000 entries per file):
 ```bash

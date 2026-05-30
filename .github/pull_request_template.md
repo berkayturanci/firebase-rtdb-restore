@@ -13,6 +13,6 @@ Please provide a clear and concise description of the changes introduced in this
 ## Checklist
 
 - [ ] My code follows the code style and conventions of this project.
-- [ ] I have verified my changes locally.
-- [ ] I have updated the documentation (`README.md`, etc.) to reflect these changes if applicable.
+- [ ] I ran `make check` locally (lint, tests, build, twine check) and it passes.
+- [ ] I have updated the documentation (`README.md`, `examples/`, docs site, `CHANGELOG.md`) to reflect these changes if applicable.
 - [ ] If this introduces new dependencies, they are added to `requirements.txt` and `pyproject.toml`.
