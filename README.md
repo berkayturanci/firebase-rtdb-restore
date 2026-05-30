@@ -34,6 +34,30 @@ This toolkit solves these problems using four simple steps:
 
 ---
 
+## Why This Exists
+
+Firebase RTDB exports are easy to create, but restoring large backups safely is harder than it looks. Teams often discover the risk only during an incident: the console import path overwrites data, one-shot scripts run into request limits, and many JSON processors load too much into memory.
+
+This project is built for the recovery path where correctness matters more than cleverness. It gives you a repeatable split -> validate -> dry-run -> upload workflow, with explicit destructive flags, resumable progress, release checksums, an SBOM, and a production restore runbook.
+
+### Terminal Demo
+
+```bash
+$ pip install firebase-rtdb-tools
+$ firebase-rtdb-split backup.json -o ./chunks -n users -c 1000
+Done: 2048 entries -> 3 chunk files.
+
+$ firebase-rtdb-validate backup.json ./chunks -n users
+RESULT: PASSED - chunks are a 100% lossless split.
+
+$ firebase-rtdb-upload ./chunks -s serviceAccountKey.json -p /users --dry-run
+Dry run complete: 3 chunks checked, 0 writes performed.
+```
+
+Want to share the project? See the [Launch Kit](docs/launch.md) for short posts, long-form copy, and community-specific submission drafts.
+
+---
+
 ## Installation
 
 ### Via PyPI
