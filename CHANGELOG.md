@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+### Added
+- README hero banner (`docs/hero-banner.svg`) — an on-brand vector banner (matches the favicon flame + database motif) with crisp, correctly-spelled title text and a split → verify → restore pipeline illustration.
+
+### Changed
+- The documentation site's "Current site version" now updates automatically from the latest GitHub release via a small client-side fetch, falling back to the server-rendered value (the CI-guarded `data-package-version` is unchanged).
+
+---
+
 ## [0.2.2] - 2026-05-31
 ### Added
 - Release artifact integrity: the publish workflow now attaches a `SHA256SUMS` checksum file and a CycloneDX SBOM (`sbom.cdx.json`) to each GitHub Release; `SECURITY.md` documents how to verify downloads. These artifacts are written to `artifacts/` so the PyPI upload still receives only the wheel and sdist.

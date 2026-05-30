@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/hero-banner.svg" alt="Firebase RTDB Restore Toolkit — stream-split, verify, and losslessly restore large Firebase Realtime Database backups" width="100%">
+</p>
+
 # Firebase RTDB Lossless Restore Toolkit
 
 A simple, memory-efficient toolkit to restore large Firebase Realtime Database (RTDB) backups safely and without data loss.
