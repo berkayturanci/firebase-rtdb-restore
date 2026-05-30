@@ -75,7 +75,33 @@ To upload data to your Firebase database:
 
 ---
 
-## Simple Restore Workflow
+## Before You Restore Production Data
+
+⚠️ **WARNING**: Destructive operations like `--wipe` and `--wipe-root` can cause irreversible data loss if misused.
+
+If you are restoring production data, please **stop and read the [Production Restore Runbook](docs/runbook.md)** before proceeding. The runbook covers:
+* Safe dry-run previews
+* Resuming from partial uploads
+* Handling exponential backoff and rate limits
+* Validating post-restore state
+
+For a full list of all parameters, see the [CLI/API Reference](docs/cli.md). Other resources: [Contributing Guide](CONTRIBUTING.md) | [Security Policy](SECURITY.md) | [Release Notes](CHANGELOG.md).
+
+### Choose Your Workflow
+
+| Goal | Command Flag | Behavior |
+|------|-------------|----------|
+| **Evaluate/Preview** | `--dry-run` | Reads chunks and simulates the upload without writing any data. |
+| **Append/Resume** | *(default)* | Uses additive `PATCH` to merge data. Does not erase existing siblings. |
+| **Target Wipe** | `--wipe` | Wipes ONLY the specific target node (`-p /users`) before uploading chunks. |
+| **Root Wipe** | `--wipe-root` | 🚨 Wipes the ENTIRE database root (`/`) before uploading. |
+| **Oversized Recovery**| `upload-single` | Recursively splits and uploads a single giant node key-by-key. |
+
+---
+
+## Quick Examples
+
+The commands below are quick examples. For production-safe procedures, refer to the [Production Restore Runbook](docs/runbook.md).
 
 ### Step 1: Split the giant backup file
 Split the backup JSON into smaller files (default is 1,000 entries per file):
