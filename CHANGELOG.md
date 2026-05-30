@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2026-05-30
+### Added
+- Shared `_common.py` module hosting the streaming JSON parser, node locator, service-account resolution, idempotent app init, retrying/recursive writes, and TTY-aware progress (removes duplication across the four CLIs).
+- `firebase-rtdb-upload`: `--dry-run` (preview wipes/uploads without writing), `--wipe-root` (wipe the entire database root), and `-w/--workers N` (parallel chunk uploads).
+- Resumable uploads: completed chunks are recorded in a `.upload-progress` manifest and skipped on a subsequent non-wipe run.
+- Automatic retry with exponential backoff on transient write failures.
+- CI now lints with Ruff and runs the test suite across Python 3.8–3.13.
+- Expanded test coverage: minified JSON, node beyond the first 10 KB, missing node, target-vs-root wipe, dry-run, resume, recursive giant-entry split, and retry behaviour.
+- `python -m firebase_rtdb_restore` help entry point and a `[project.optional-dependencies] dev` extra.
+
+### Changed
+- **Breaking:** `--wipe` now wipes only the target path (`-p/--path`) instead of the entire database root; use `--wipe-root` for the previous behaviour.
+- `firebase-rtdb-upload` oversized-entry handling now splits recursively (matching `upload-single`) instead of one level deep.
+- Node location streams the whole file, so the target node is no longer required to appear within the first 10 KB.
+- `make` upload variables renamed `PATH` → `DBPATH` (the old name shadowed the system `PATH` environment variable).
+- Packaging modernised: SPDX `license = "MIT"`, `requires-python >= 3.8`, build backend `setuptools >= 77`.
+
+### Fixed
+- Removed an unused `import sys` in `split_backup.py` that broke `ruff check`.
+- Entries whose value is literally `null` are no longer silently dropped while streaming.
+
+### Removed
+- `continue-on-error` on the PyPI publish step, which masked failed releases.
+
+---
+
 ## [0.1.5] - 2026-05-30
 ### Added
 - Automated unit test suite execution on pushes and pull requests to `main` via `.github/workflows/tests.yml`.

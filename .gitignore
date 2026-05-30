@@ -9,4 +9,12 @@ ENV/
 build/
 dist/
 *.egg-info/
+.ruff_cache/
 .DS_Store
+
+# Never commit Firebase credentials or generated restore artifacts
+serviceAccountKey.json
+*serviceAccount*.json
+*-firebase-adminsdk-*.json
+rtdb-chunks/
+.upload-progress

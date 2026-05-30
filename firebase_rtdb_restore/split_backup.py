@@ -9,13 +9,11 @@ Reads in 128 KB blocks — never loads the full file into memory.
 import argparse
 import json
 import os
-import sys
 
-READ_CHUNK = 128 * 1024  # 128 KB read window
+from firebase_rtdb_restore._common import iter_entries, locate_node
 
 
 def split_backup(input_path, output_dir, chunk_size, node_key):
-    decoder = json.JSONDecoder()
     if not os.path.exists(input_path):
         print(f"ERROR: Input file not found: {input_path}")
         return 0, 0
@@ -25,103 +23,16 @@ def split_backup(input_path, output_dir, chunk_size, node_key):
     chunk_num = 0
     total = 0
     chunk = {}
-    bytes_read = 0
 
-    with open(input_path, "r", encoding="utf-8") as f:
-        # ── Step 1: locate node section and skip to first entry ──────────
-        header = f.read(10 * 1024)
-        bytes_read += len(header)
-
-        node_pattern = f'"{node_key}"'
-        node_idx = header.find(node_pattern)
-        if node_idx == -1:
-            print(f'ERROR: "{node_key}" key not found in first 10 KB. Is this a Firebase RTDB backup?')
+    with open(input_path, encoding="utf-8") as f:
+        buf = locate_node(f, node_key)
+        if buf is None:
+            print(f'ERROR: "{node_key}" key not found. Is this a Firebase RTDB backup?')
             return 0, 0
 
-        after = header[node_idx + len(node_pattern):]
-        colon = after.find(":")
-        brace = after.find("{", colon)
-        if brace == -1:
-            print(f"ERROR: could not find opening {{ of {node_key} object")
-            return 0, 0
-
-        # buf = everything after the opening { of the target object
-        buf = after[brace + 1:]
-
-        # ── Step 2: stream entries ──────────────────────────────────────
-        while True:
-            # Top up buffer to at least READ_CHUNK characters
-            if len(buf) < READ_CHUNK:
-                more = f.read(READ_CHUNK)
-                if more:
-                    bytes_read += len(more)
-                    buf += more
-                    pct = min(bytes_read * 100 // file_size, 100)
-                    print(f"\r  {total} entries parsed | {pct}% read", end="", flush=True)
-
-            s = buf.lstrip(" \t\n\r")
-
-            if not s:
-                break
-
-            # End of object
-            if s[0] == "}":
-                break
-
-            # Skip commas between entries
-            if s[0] == ",":
-                buf = s[1:]
-                continue
-
-            # Unexpected character — skip
-            if s[0] != '"':
-                buf = s[1:]
-                continue
-
-            # ── parse key ────────────────────────────────────────────────────
-            try:
-                key, key_end = decoder.raw_decode(s)
-            except json.JSONDecodeError:
-                # Need more data
-                more = f.read(READ_CHUNK)
-                if not more:
-                    break
-                bytes_read += len(more)
-                buf = s + more
-                continue
-
-            if not isinstance(key, str):
-                buf = s[key_end:]
-                continue
-
-            rest = s[key_end:].lstrip()
-            if not rest or rest[0] != ":":
-                buf = rest
-                continue
-
-            val_str = rest[1:].lstrip()
-
-            # ── parse value (read more if incomplete) ────────────────────────
-            val = None
-            while True:
-                try:
-                    val, val_end = decoder.raw_decode(val_str)
-                    break
-                except json.JSONDecodeError:
-                    more = f.read(READ_CHUNK)
-                    if not more:
-                        break  # EOF with incomplete value
-                    bytes_read += len(more)
-                    val_str += more
-
-            if val is None:
-                break  # incomplete entry at EOF — stop
-
-            # ── store entry ──────────────────────────────────────────────────
+        for key, val in iter_entries(f, buf, file_size=file_size, label="parsing"):
             chunk[key] = val
             total += 1
-            buf = val_str[val_end:]
-
             if len(chunk) >= chunk_size:
                 _write_chunk(output_dir, chunk_num, chunk)
                 chunk_num += 1
@@ -160,6 +71,9 @@ def main():
     parser.add_argument("-n", "--node", default="users", help="The top-level JSON key to split (default: 'users').")
 
     args = parser.parse_args()
+
+    if args.chunk_size < 1:
+        parser.error("--chunk-size must be a positive integer")
 
     input_path = os.path.expanduser(args.backup_file)
     output_dir = os.path.expanduser(args.output_dir) if args.output_dir \

@@ -3,7 +3,9 @@
 Verify that chunk files are a lossless, exact split of the original backup.
 
 Streams the original JSON (never loads it fully into memory), computes a
-SHA-256 fingerprint per entry, then compares against every chunk file.
+SHA-256 fingerprint per entry, then compares against every chunk file. Only the
+compact per-entry fingerprints (16-byte digest + size) are held resident, not
+the entry data itself.
 """
 
 import argparse
@@ -12,106 +14,37 @@ import json
 import os
 import sys
 
-READ_CHUNK = 128 * 1024  # 128 KB
+from firebase_rtdb_restore._common import iter_entries, locate_node
 
 
 def _fingerprint(value):
-    """SHA-256 of canonical (sorted-keys) JSON — order-independent deep equality."""
-    canonical = json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
-    return hashlib.sha256(canonical.encode("utf-8")).hexdigest(), len(canonical.encode("utf-8"))
+    """SHA-256 of canonical (sorted-keys) JSON — order-independent deep equality.
+
+    Returns ``(digest_bytes, byte_size)``. The raw 16-byte-truncated digest is
+    kept instead of the 64-char hex string to roughly quarter resident memory
+    when validating very large backups.
+    """
+    encoded = json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).digest()[:16], len(encoded)
 
 
 def stream_original(input_path, node_key):
-    """
-    Stream-parse the target node object from the backup.
-    Yields (key, fingerprint) pairs without loading the full file.
-    """
-    decoder = json.JSONDecoder()
+    """Stream-parse the target node object, yielding ``(key, fingerprint)`` pairs."""
     if not os.path.exists(input_path):
         print(f"ERROR: Input file not found: {input_path}")
         sys.exit(1)
     file_size = os.path.getsize(input_path)
-    bytes_read = 0
-    total = 0
 
-    with open(input_path, "r", encoding="utf-8") as f:
-        header = f.read(10 * 1024)
-        bytes_read += len(header)
-
-        node_pattern = f'"{node_key}"'
-        node_idx = header.find(node_pattern)
-        if node_idx == -1:
-            print(f'ERROR: "{node_key}" key not found in first 10 KB.')
+    with open(input_path, encoding="utf-8") as f:
+        buf = locate_node(f, node_key)
+        if buf is None:
+            print(f'ERROR: "{node_key}" key not found.')
             sys.exit(1)
 
-        after = header[node_idx + len(node_pattern):]
-        colon = after.find(":")
-        brace = after.find("{", colon)
-        if brace == -1:
-            print(f"ERROR: could not find opening {{ of {node_key} object")
-            sys.exit(1)
+        for key, val in iter_entries(f, buf, file_size=file_size, label="Streaming original"):
+            yield key, _fingerprint(val)
 
-        buf = after[brace + 1:]
-
-        while True:
-            if len(buf) < READ_CHUNK:
-                more = f.read(READ_CHUNK)
-                if more:
-                    bytes_read += len(more)
-                    buf += more
-                    pct = min(bytes_read * 100 // file_size, 100)
-                    print(f"\r  Streaming original: {total} entries | {pct}% read ", end="", flush=True)
-
-            s = buf.lstrip(" \t\n\r")
-            if not s or s[0] == "}":
-                break
-            if s[0] == ",":
-                buf = s[1:]
-                continue
-            if s[0] != '"':
-                buf = s[1:]
-                continue
-
-            try:
-                key, key_end = decoder.raw_decode(s)
-            except json.JSONDecodeError:
-                more = f.read(READ_CHUNK)
-                if not more:
-                    break
-                bytes_read += len(more)
-                buf = s + more
-                continue
-
-            if not isinstance(key, str):
-                buf = s[key_end:]
-                continue
-
-            rest = s[key_end:].lstrip()
-            if not rest or rest[0] != ":":
-                buf = rest
-                continue
-
-            val_str = rest[1:].lstrip()
-            val = None
-            while True:
-                try:
-                    val, val_end = decoder.raw_decode(val_str)
-                    break
-                except json.JSONDecodeError:
-                    more = f.read(READ_CHUNK)
-                    if not more:
-                        break
-                    bytes_read += len(more)
-                    val_str += more
-
-            if val is None:
-                break
-
-            total += 1
-            buf = val_str[val_end:]
-            yield key, _fingerprint(val)  # yields (key, (fp, size))
-
-    print(f"\r  Streaming original: {total} entries | 100% read ")
+    print()  # newline after the progress line
 
 
 def load_chunks(chunks_dir):
@@ -234,7 +167,7 @@ def main():
     # ── Top-10 largest entries ───────────────────────────────────────────────
     top10 = sorted(chunk_fps.items(), key=lambda x: x[1][1], reverse=True)[:10]
     total_bytes = sum(size for _, (_, size) in chunk_fps.items())
-    print(f"\n  Top 10 largest entries (by JSON size):")
+    print("\n  Top 10 largest entries (by JSON size):")
     for key, (_, size) in top10:
         bar = "!" if size > 10 * 1024 * 1024 else ("~" if size > 1 * 1024 * 1024 else " ")
         print(f"  {bar} {size / 1024:8.1f} KB   {key}")

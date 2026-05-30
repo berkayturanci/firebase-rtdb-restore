@@ -1,26 +1,33 @@
 [build-system]
-requires = ["setuptools>=61.0.0"]
+requires = ["setuptools>=77.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "firebase-rtdb-tools"
-version = "0.1.10"
+version = "0.2.0"
 description = "Firebase Realtime Database (RTDB) lossless restore toolkit for large backups"
 readme = "README.md"
 authors = [
     { name = "Berkay Turanci", email = "berkayturanci@gmail.com" }
 ]
-requires-python = ">=3.7"
-license = { text = "MIT" }
+requires-python = ">=3.8"
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Database",
     "Topic :: Utilities",
 ]
 dependencies = [
     "firebase-admin>=5.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.4.0",
+    "build",
+    "pre-commit",
 ]
 
 [project.urls]
@@ -39,10 +46,12 @@ include = ["firebase_rtdb_restore*"]
 
 [tool.ruff]
 line-length = 120
-target-version = "py37"
+target-version = "py38"
 
+# The codebase intentionally uses the os.path API throughout, so the PTH
+# (pathlib) rule set is deliberately not enabled.
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "RET", "SIM", "ARG", "PTH"]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "RET", "SIM", "ARG"]
 ignore = ["E501"]  # Line length handled separately
 exclude = [
     ".git",
@@ -51,4 +60,9 @@ exclude = [
     "venv",
     "__pycache__",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests inject mock firebase_admin modules into sys.modules before importing
+# the package under test, so imports legitimately follow executable statements.
+"tests/*" = ["E402"]
 
