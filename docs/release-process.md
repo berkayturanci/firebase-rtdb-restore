@@ -74,10 +74,28 @@ Pushing a `v*` tag triggers `.github/workflows/publish.yml`, which:
 1. Builds the sdist and wheel.
 2. Runs `twine check` on the artifacts.
 3. Publishes to PyPI (`skip-existing` so re-runs are safe).
-4. Creates a GitHub Release with the built artifacts attached and
-   auto-generated notes.
+4. Generates `SHA256SUMS` and a CycloneDX SBOM into `artifacts/`.
+5. Creates a GitHub Release with the wheel, sdist, checksums, and SBOM attached
+   and auto-generated notes.
 
 The workflow runs only on tags, so day-to-day PRs never publish.
+
+### Release authentication (Trusted Publishing)
+
+Publishing uses [PyPI Trusted Publishing](https://docs.pypi.org/trusted-publishers/)
+over OIDC — there is **no long-lived PyPI API token** stored in the repository.
+The workflow's `id-token: write` permission lets it mint a short-lived
+credential, and the publisher is configured on PyPI as:
+
+| Field | Value |
+|-------|-------|
+| Owner | `berkayturanci` |
+| Repository | `firebase-rtdb-restore` |
+| Workflow | `publish.yml` |
+| Environment | *(none)* |
+
+Because no explicit password is passed, the publish action also produces
+[PEP 740](https://peps.python.org/pep-0740/) attestations for the artifacts.
 
 ---
 
