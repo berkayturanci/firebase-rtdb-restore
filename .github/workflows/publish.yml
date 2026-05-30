@@ -33,10 +33,13 @@ jobs:
         pip install twine
         twine check dist/*
       
+    # OIDC Trusted Publishing: no API token. The id-token: write permission
+    # above lets the action mint a short-lived credential, and PEP 740
+    # attestations are produced automatically (they are disabled when an
+    # explicit password is used).
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1.14.0 (pinned 2026-05-30)
       with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
         skip-existing: true
 
     # The release-integrity artifacts below are written to artifacts/ — never
