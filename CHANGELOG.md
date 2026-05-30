@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release artifact integrity: the publish workflow now attaches a `SHA256SUMS` checksum file and a CycloneDX SBOM (`sbom.cdx.json`) to each GitHub Release; `SECURITY.md` documents how to verify downloads. These artifacts are written to `artifacts/` so the PyPI upload still receives only the wheel and sdist.
 
 ### Changed
+- Bumped pinned GitHub Actions to current majors: `actions/checkout` v6.0.2, `actions/setup-python` v6.2.0, `actions/upload-artifact` v7.0.1, and `softprops/action-gh-release` v3.0.0 (all Node 24 runtime; no workflow input changes).
 - PyPI releases now authenticate via OIDC Trusted Publishing instead of a stored `PYPI_API_TOKEN`; with no explicit password the publish action also emits PEP 740 attestations. Release authentication is documented in `docs/release-process.md`.
 - Full operational documentation: a production restore runbook (`docs/runbook.md`), a complete CLI & API reference (`docs/cli.md`), and a release process / versioning policy (`docs/release-process.md`) — replacing the previous stub pages and resolving the README/docs-site links to them.
 - Supply-chain security automation: Dependabot (pip + GitHub Actions), a CodeQL code-scanning workflow, and an OpenSSF Scorecard workflow — all third-party actions pinned to commit SHAs with least-privilege permissions.
