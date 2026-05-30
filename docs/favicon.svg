@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Firebase RTDB Restore Toolkit">
+  <defs>
+    <linearGradient id="flame" x1="12" y1="8" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffca28"/>
+      <stop offset="0.45" stop-color="#f58220"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#111827"/>
+  <path d="M17 44 27 9l7 19 6-10 7 26-15 9-15-9Z" fill="url(#flame)"/>
+  <path d="M20 42h24v6c0 4-24 4-24 0v-6Z" fill="#10b981"/>
+  <ellipse cx="32" cy="42" rx="12" ry="4" fill="#34d399"/>
+  <path d="M25 35h14M25 29h9" stroke="#f9fafb" stroke-width="3" stroke-linecap="round"/>
+</svg>

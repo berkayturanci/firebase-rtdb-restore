@@ -1,0 +1,16 @@
+{
+  "name": "Firebase RTDB Restore Toolkit",
+  "short_name": "RTDB Restore",
+  "description": "Lossless restore tooling for large Firebase Realtime Database backups.",
+  "start_url": "/firebase-rtdb-restore/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#f58220",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    }
+  ]
+}
