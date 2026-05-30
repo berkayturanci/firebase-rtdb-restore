@@ -1,0 +1,25 @@
+name: Question
+description: Ask a setup or usage question
+title: "question: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for setup help, usage questions, and restore workflow clarification.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you trying to do, and where are you stuck?
+      placeholder: Describe your Firebase RTDB restore scenario and the command you are trying to run.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Include non-sensitive details such as Python version, operating system, package version, and sanitized command output.
+      placeholder: Do not paste service account keys, database secrets, or private user data.
+    validations:
+      required: false

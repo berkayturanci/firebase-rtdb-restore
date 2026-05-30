@@ -32,7 +32,10 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/berkayturanci/firebase-rtdb-restore"
+Repository = "https://github.com/berkayturanci/firebase-rtdb-restore"
 Issues = "https://github.com/berkayturanci/firebase-rtdb-restore/issues"
+Changelog = "https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/CHANGELOG.md"
+Documentation = "https://berkayturanci.github.io/firebase-rtdb-restore/"
 
 [project.scripts]
 firebase-rtdb-split = "firebase_rtdb_restore.split_backup:main"
@@ -65,4 +68,3 @@ exclude = [
 # Tests inject mock firebase_admin modules into sys.modules before importing
 # the package under test, so imports legitimately follow executable statements.
 "tests/*" = ["E402"]
-
