@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "firebase-rtdb-tools"
-version = "0.1.6"
+version = "0.1.7"
 description = "Firebase Realtime Database (RTDB) lossless restore toolkit for large backups"
 readme = "README.md"
 authors = [
@@ -36,3 +36,19 @@ firebase-rtdb-upload-single = "firebase_rtdb_restore.upload_single_user:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["firebase_rtdb_restore*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py37"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "RET", "SIM", "ARG", "PTH"]
+ignore = ["E501"]  # Line length handled separately
+exclude = [
+    ".git",
+    "build",
+    "dist",
+    "venv",
+    "__pycache__",
+]
+
