@@ -11,8 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Documentation site release guard that checks the site version signal against `pyproject.toml`.
 - Live GitHub Release badge/link on the documentation site.
+- Favicon, web manifest, canonical URL, Open Graph metadata, and Twitter card metadata for the documentation site.
 
 ### Fixed
+- README and documentation site PyPI badges now use an explicit stable Shields endpoint.
 - Documentation site PyPI badge now uses the live PyPI version instead of a hard-coded historical version.
 - Documentation site command generator now uses the current `DBPATH` make variable.
 
