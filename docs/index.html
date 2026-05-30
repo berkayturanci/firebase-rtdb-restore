@@ -45,6 +45,7 @@
             <nav class="nav-links">
                 <a href="#problem">The Problem</a>
                 <a href="#features">Features</a>
+                <a href="#documentation">Documentation</a>
                 <a href="#guide">Interactive Guide</a>
                 <a href="#generator">Command Generator</a>
             </nav>
@@ -162,12 +163,48 @@
         </div>
     </section>
 
+    <!-- Documentation Hub Section -->
+    <section id="documentation" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Documentation Hub</h2>
+                <p>Everything you need to safely plan, execute, and troubleshoot a production restore.</p>
+            </div>
+            <div class="features-grid">
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/docs/runbook.md" target="_blank" class="feature-card" style="text-decoration: none; color: inherit;">
+                    <i class="fa-solid fa-book-open feature-icon"></i>
+                    <h3>Production Runbook</h3>
+                    <p>Safety checklist, dry-run guides, and step-by-step production restore procedure.</p>
+                </a>
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/docs/cli.md" target="_blank" class="feature-card" style="text-decoration: none; color: inherit;">
+                    <i class="fa-solid fa-terminal feature-icon"></i>
+                    <h3>CLI Reference</h3>
+                    <p>Complete list of parameters, flags, and programmatic API endpoints.</p>
+                </a>
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/CHANGELOG.md" target="_blank" class="feature-card" style="text-decoration: none; color: inherit;">
+                    <i class="fa-solid fa-clipboard-list feature-icon"></i>
+                    <h3>Release Notes</h3>
+                    <p>Changelog, new features, and upgrade instructions.</p>
+                </a>
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/SECURITY.md" target="_blank" class="feature-card" style="text-decoration: none; color: inherit;">
+                    <i class="fa-solid fa-shield-halved feature-icon"></i>
+                    <h3>Security Policy</h3>
+                    <p>Guidance on reporting vulnerabilities and maintaining data safety.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Interactive Stepper Guide Section -->
-    <section id="guide" class="section">
+    <section id="guide" class="section bg-glass">
         <div class="container">
             <div class="section-header">
                 <h2>Interactive Restore Workflow</h2>
                 <p>Step-by-step interactive simulator showing how the toolkit processes and uploads your backup.</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 69, 58, 0.1); border-left: 4px solid #ff453a; border-radius: 4px; text-align: left;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #ff453a; margin-right: 8px;"></i>
+                    <strong style="color: #ff453a;">Production Warning:</strong> These are simplified examples. Before restoring real production data, consult the <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/docs/runbook.md" target="_blank" style="color: #ff453a; text-decoration: underline;">Production Restore Runbook</a> to prevent accidental data loss.
+                </div>
             </div>
 
             <div class="stepper-layout">
@@ -325,11 +362,15 @@
     </section>
 
     <!-- Interactive CLI Command Generator Section -->
-    <section id="generator" class="section bg-glass">
+    <section id="generator" class="section">
         <div class="container">
             <div class="section-header">
                 <h2>CLI Command Generator</h2>
                 <p>Customize the parameters below to dynamically generate the exact commands you need for your restoration.</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 69, 58, 0.1); border-left: 4px solid #ff453a; border-radius: 4px; text-align: left;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #ff453a; margin-right: 8px;"></i>
+                    <strong style="color: #ff453a;">Production Warning:</strong> Do not blindly copy-paste destructive commands (<code>--wipe</code>, <code>--wipe-root</code>). See the <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/docs/runbook.md" target="_blank" style="color: #ff453a; text-decoration: underline;">Production Runbook</a> first.
+                </div>
             </div>
 
             <div class="generator-layout">
