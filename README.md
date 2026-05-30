@@ -3,7 +3,7 @@
 A simple, memory-efficient toolkit to restore large Firebase Realtime Database (RTDB) backups safely and without data loss.
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/berkayturanci/firebase-rtdb-restore)](https://github.com/berkayturanci/firebase-rtdb-restore/releases)
-[![PyPI version](https://img.shields.io/badge/pypi-v0.1.10-blue?logo=pypi)](https://pypi.org/project/firebase-rtdb-tools/)
+[![PyPI version](https://img.shields.io/badge/pypi-v0.2.0-blue?logo=pypi)](https://pypi.org/project/firebase-rtdb-tools/)
 [![Run Tests](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml/badge.svg)](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -88,18 +88,27 @@ make validate BACKUP=backup.json CHUNKS=./chunks NODE=users
 ### Step 3: Upload chunks to Firebase
 Upload all chunks to your database. This merges data additively and will not overwrite other sibling nodes:
 ```bash
-# Option A: Clean restore (wipes the entire database root first, then uploads chunks under /users)
-make upload-wipe CHUNKS=./chunks SA=serviceAccountKey.json PATH=/users
+# Option A: Append/Resume (merges chunks into /users without wiping anything else)
+make upload CHUNKS=./chunks SA=serviceAccountKey.json DBPATH=/users
 
-# Option B: Append/Resume (merges chunks into /users without wiping anything else)
-make upload CHUNKS=./chunks SA=serviceAccountKey.json PATH=/users
+# Option B: Clean restore of the TARGET path (wipes /users first, leaves siblings intact)
+make upload-wipe CHUNKS=./chunks SA=serviceAccountKey.json DBPATH=/users
+
+# Option C: Full reset (wipes the ENTIRE database root first — destroys all data)
+make upload-wipe-root CHUNKS=./chunks SA=serviceAccountKey.json DBPATH=/users
 ```
 *(Or use `firebase-rtdb-upload ./chunks -s serviceAccountKey.json -p /users --wipe`)*
+
+**Upload options:**
+* `--wipe` wipes only the target path (`-p`); `--wipe-root` wipes the entire database root.
+* `--dry-run` previews exactly what would be wiped/uploaded without writing anything.
+* `-w/--workers N` uploads N chunks in parallel (default 1).
+* Uploads are **resumable**: completed chunks are recorded in a `.upload-progress` file inside the chunks directory and skipped automatically when you re-run after a failure. Transient write errors are retried with exponential backoff.
 
 ### Step 4: Handle giant entries (if any)
 If the upload script reports that a specific entry failed because it is too large to fit in a single request:
 ```bash
-make upload-single UID=some_uid CHUNKS=./chunks/chunk_0000.json SA=serviceAccountKey.json PATH=/users
+make upload-single UID=some_uid CHUNKS=./chunks/chunk_0000.json SA=serviceAccountKey.json DBPATH=/users
 ```
 *(Or use `firebase-rtdb-upload-single some_uid ./chunks/chunk_0000.json -s serviceAccountKey.json -p /users`)*
 
