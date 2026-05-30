@@ -198,8 +198,8 @@
 
                     <!-- Step 2 content -->
                     <div class="step-content" id="step-2">
-                        <h3>Step 2: Losslessly verify the split</h3>
-                        <p>Computes order-independent SHA-256 fingerprints of every entry in both the original file and the chunks, verifying 100% lossless parity.</p>
+                        <h3>Step 2: Verify the split without data loss</h3>
+                        <p>Compares SHA-256 fingerprints of every entry in both the original file and the chunks to guarantee that no data was lost.</p>
                         <div class="code-block">
                             <span class="prompt">$</span> firebase-rtdb-validate backup.json ./chunks -n users
                         </div>
@@ -229,8 +229,8 @@
 
                     <!-- Step 3 content -->
                     <div class="step-content" id="step-3">
-                        <h3>Step 3: Upload chunks in size-based batches</h3>
-                        <p>Uploads the validated chunks using additive <code>PATCH</code> operations. Enforces a maximum payload limit of 4 MB per request to ensure safety.</p>
+                        <h3>Step 3: Upload chunks in safe batches</h3>
+                        <p>Uploads the validated chunks in safe ≤ 4 MB batches. Uses PATCH requests to merge data without erasing anything else.</p>
                         <div class="code-block">
                             <span class="prompt">$</span> firebase-rtdb-upload ./chunks -p /users --wipe
                         </div>
@@ -264,8 +264,8 @@
 
                     <!-- Step 4 content -->
                     <div class="step-content" id="step-4">
-                        <h3>Step 4: Handle giant individual nodes recursively</h3>
-                        <p>If a specific user/record exceeds 4 MB on its own, this tool recursively splits the record into sub-keys and uploads them one-by-one.</p>
+                        <h3>Step 4: Handle giant entries recursively</h3>
+                        <p>If a single entry (like one giant user) is too large, the tool automatically splits it into sub-keys and uploads them recursively.</p>
                         <div class="code-block">
                             <span class="prompt">$</span> firebase-rtdb-upload-single oversized_uid ./chunks/chunk_0000.json -p /users
                         </div>

@@ -1,6 +1,6 @@
 # Firebase RTDB Lossless Restore Toolkit
 
-A standalone, memory-efficient toolkit to restore large Firebase Realtime Database (RTDB) backups safely and losslessly.
+A simple, memory-efficient toolkit to restore large Firebase Realtime Database (RTDB) backups safely and without data loss.
 
 [![PyPI version](https://img.shields.io/pypi/v/firebase-rtdb-tools.svg)](https://pypi.org/project/firebase-rtdb-tools/)
 [![Run Tests](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml/badge.svg)](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml)
@@ -10,22 +10,22 @@ A standalone, memory-efficient toolkit to restore large Firebase Realtime Databa
 
 ## The Problem
 
-Restoring a very large Firebase Realtime Database backup (e.g. 1 GB+) is surprisingly challenging:
+Restoring a large Firebase database backup (e.g., 1 GB+) using default tools is difficult for three reasons:
 
-1. **The Firebase Console "Import JSON" Trap**: The console import performs a `PUT` operation, which **fully overwrites** the target path. You cannot upload a large database in pieces via the UI because each successive upload wipes out the previous ones.
-2. **The REST API / Admin SDK Request Limits**: Firebase enforces a strict size limit per write request (typically 16 MB to 256 MB depending on database load). Pushing a large JSON file in a single request will fail with timeouts or payload size errors.
-3. **Memory Exhaustion**: Loading a multi-gigabyte JSON backup into memory in standard Python or Node.js scripts causes the process to crash with Out-Of-Memory (OOM) errors.
+1. **The Overwrite Trap**: Importing a JSON file in the Firebase Console completely erases all existing data at that path first. You cannot upload a large backup in pieces because each new piece wipes out the previous ones.
+2. **Request Size Limits**: Firebase limits the size of a single write request. Large backup files will timeout or fail with payload size errors.
+3. **Out-Of-Memory Crashes**: Loading a giant JSON backup file into memory will crash standard scripts.
 
 ---
 
 ## The Solution
 
-This toolkit provides 4 stream-based, memory-efficient scripts to split, validate, and upload database backups:
+This toolkit solves these problems using four simple steps:
 
-* **Stream Splitting**: Splits a giant JSON backup without loading the entire file into memory (uses 128 KB chunk reads + iterative decoding).
-* **Fingerprint Validation**: Losslessly verifies the split by checking UID presence and canonical SHA-256 hash equality of all entry values.
-* **Size-based PATCH Uploading**: Merges data additively via `PATCH` updates, automatically grouping entries into conservative ≤ 4 MB batches.
-* **Oversized User Recovery**: Recursively drills down and splits individual massive user nodes (e.g. 40 MB+) child key by child key to fit within the API constraints.
+* **Stream Splitting**: Splits a giant JSON file into smaller chunks without loading the whole file into memory. It reads the file in tiny 128 KB blocks.
+* **Lossless Verification**: Automatically checks that no data was lost during splitting by comparing SHA-256 fingerprints of every single entry.
+* **Batch Uploading**: Groups entries into safe ≤ 4 MB batches and uploads them using additive `PATCH` updates, merging data without erasing anything else.
+* **Oversized Entry Recovery**: Recursively splits individual massive entries (like a single user with huge data) child-key by child-key so they fit under request limits.
 
 ---
 
@@ -37,13 +37,13 @@ This toolkit provides 4 stream-based, memory-efficient scripts to split, validat
 pip install firebase-rtdb-tools
 ```
 
-This installs the four global command-line utilities:
+This installs four simple command-line tools:
 * `firebase-rtdb-split`
 * `firebase-rtdb-validate`
 * `firebase-rtdb-upload`
 * `firebase-rtdb-upload-single`
 
-### Via Source
+### From Source
 
 ```bash
 git clone https://github.com/berkayturanci/firebase-rtdb-restore.git
@@ -53,75 +53,57 @@ pip install -r requirements.txt
 
 ---
 
-## Service Account Authentication
+## How to Get Your Firebase Service Account Key
 
-For uploading data to your Firebase database, you need a Google Service Account key.
+To upload data to your Firebase database:
 
 1. Go to your **Firebase Console** -> **Project Settings** -> **Service accounts**.
 2. Click **Generate new private key** and download the JSON file.
-3. Use the JSON file with the `-s` / `--service-account` option, or set the environment variable:
+3. Pass the path to this JSON file using the `-s` / `--service-account` option, or set the environment variable:
    ```bash
    export FIREBASE_SERVICE_ACCOUNT_KEY="/path/to/serviceAccountKey.json"
    ```
-   If neither is set, the tools look for a file named `serviceAccountKey.json` in your current working directory.
 
 ---
 
-## Complete Step-by-Step Restore Workflow
+## Simple Restore Workflow
 
-### Step 1: Stream-split the giant backup file
-
-Split the raw backup JSON into smaller, manageable chunks (default is 1,000 entries/keys per chunk). This works on pretty-printed as well as minified (single-line) JSON.
-
+### Step 1: Split the giant backup file
+Split the backup JSON into smaller files (default is 1,000 entries per file):
 ```bash
-firebase-rtdb-split /path/to/backup.json -o ./chunks -n users -c 1000
+make split BACKUP=backup.json CHUNKS=./chunks NODE=users
 ```
+*(Or use `firebase-rtdb-split backup.json -o ./chunks -n users -c 1000`)*
 
-* **`-o`, `--output-dir`**: Target directory for chunks (defaults to `<backup_file_dir>/rtdb-chunks`).
-* **`-n`, `--node`**: The top-level key containing the entries to split (default: `users`).
-* **`-c`, `--chunk-size`**: Number of entries per chunk file (default: 1000).
-
-### Step 2: Losslessly verify the split
-
-Before starting the upload, verify that the chunks are a 100% exact, lossless representation of the original backup file. This checks that no keys are missing, no extra keys were added, no duplicate keys exist, and every value is structurally identical (verified via SHA-256 hashes of canonical JSON representations).
-
+### Step 2: Verify the split
+Check that the split was 100% exact and no data was lost:
 ```bash
-firebase-rtdb-validate /path/to/backup.json ./chunks -n users
+make validate BACKUP=backup.json CHUNKS=./chunks NODE=users
 ```
+*(Or use `firebase-rtdb-validate backup.json ./chunks -n users`)*
 
-* **`-n`, `--node`**: The top-level key that was split (default: `users`).
-
-If the result is **`PASSED`**, you are safe to proceed.
+**Do not proceed if this step fails.**
 
 ### Step 3: Upload chunks to Firebase
-
-Upload all chunk files to Firebase via size-based batching. It uses `update()` (PATCH), which merges the entries additively and won't overwrite other sibling nodes.
-
+Upload all chunks to your database. This merges data additively and will not overwrite other sibling nodes:
 ```bash
-# Full restore — wipe everything at the root first, then upload chunks under /users:
-firebase-rtdb-upload ./chunks -p /users --wipe
+# Option A: Clean restore (wipes the entire database root first, then uploads chunks under /users)
+make upload-wipe CHUNKS=./chunks SA=serviceAccountKey.json PATH=/users
 
-# Append/Resume — merge chunks without wiping existing data:
-firebase-rtdb-upload ./chunks -p /users
+# Option B: Append/Resume (merges chunks into /users without wiping anything else)
+make upload CHUNKS=./chunks SA=serviceAccountKey.json PATH=/users
 ```
+*(Or use `firebase-rtdb-upload ./chunks -s serviceAccountKey.json -p /users --wipe`)*
 
-* **`-p`, `--path`**: The target database path to merge chunks into (default: `/users`).
-* **`--wipe`**: Delete the *entire* database root (`/`) before starting the restore (requires interactive `yes` confirmation).
-* **`-s`, `--service-account`**: Path to your service account JSON.
-* **`-d`, `--database-url`**: Explicitly override or provide the Firebase Realtime Database URL (e.g. `https://my-app-default-rtdb.europe-west1.firebasedatabase.app`).
-
-### Step 4: Handle giant individual nodes (if any)
-
-If the upload script reports that a specific key (e.g., a single user with massive data > 10 MB) failed because it exceeds the request limit, use the single-node tool to restore it. This recursively splits the user's data by child key and writes each key individually.
-
+### Step 4: Handle giant entries (if any)
+If the upload script reports that a specific entry failed because it is too large to fit in a single request:
 ```bash
-firebase-rtdb-upload-single <UID_OR_KEY> ./chunks/chunk_0003.json -p /users
+make upload-single UID=some_uid CHUNKS=./chunks/chunk_0000.json SA=serviceAccountKey.json PATH=/users
 ```
-
-* **`-p`, `--path`**: The parent database path where the node resides (default: `/users`).
+*(Or use `firebase-rtdb-upload-single some_uid ./chunks/chunk_0000.json -s serviceAccountKey.json -p /users`)*
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License. See [LICENSE](LICENSE) for details.
