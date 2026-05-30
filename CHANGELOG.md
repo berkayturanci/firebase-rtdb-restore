@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Full operational documentation: a production restore runbook (`docs/runbook.md`), a complete CLI & API reference (`docs/cli.md`), and a release process / versioning policy (`docs/release-process.md`) — replacing the previous stub pages and resolving the README/docs-site links to them.
 - Supply-chain security automation: Dependabot (pip + GitHub Actions), a CodeQL code-scanning workflow, and an OpenSSF Scorecard workflow — all third-party actions pinned to commit SHAs with least-privilege permissions.
 - `examples/` directory with a synthetic `sample-backup.json` and a step-by-step walkthrough (split, validate, tamper-detection, and dry-run upload commands) so users can practice safely without real Firebase data.
 - `make check` target that mirrors the CI gates locally (lint + tests + build + `twine check`); `twine` added to the `dev` extra.

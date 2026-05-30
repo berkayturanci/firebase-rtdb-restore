@@ -103,6 +103,14 @@ walkthrough in [`examples/README.md`](examples/README.md).
 
 ---
 
+## Reference documentation
+
+- [CLI & API Reference](docs/cli.md) — every command, flag, default, and exit code.
+- [Production Restore Runbook](docs/runbook.md) — safety checklist for real restores.
+- [Release Process & Versioning Policy](docs/release-process.md) — how versions are bumped and released.
+
+---
+
 ## Questions?
 
 If you have any questions about the contribution process, feel free to open a discussion or contact [berkayturanci@gmail.com](mailto:berkayturanci@gmail.com).
