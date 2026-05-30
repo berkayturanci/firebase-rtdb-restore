@@ -103,6 +103,9 @@ For a full list of all parameters, see the [CLI/API Reference](docs/cli.md). Oth
 
 The commands below are quick examples. For production-safe procedures, refer to the [Production Restore Runbook](docs/runbook.md).
 
+> **New here?** Try the whole split → validate flow on safe, synthetic data
+> first — no Firebase project needed. See [`examples/README.md`](examples/README.md).
+
 ### Step 1: Split the giant backup file
 Split the backup JSON into smaller files (default is 1,000 entries per file):
 ```bash
