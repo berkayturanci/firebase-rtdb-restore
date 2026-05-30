@@ -27,12 +27,16 @@ jobs:
         
     - name: Build a binary wheel and a source tarball
       run: python -m build --sdist --wheel --outdir dist/
+
+    - name: Verify package metadata
+      run: |
+        pip install twine
+        twine check dist/*
       
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@81e9d935c883d0b210363ab89cf05f3894778450  # v1.8.14 (pinned 2026-05-30)
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
-        # Supports passwordless Trusted Publishing if secret is not set
         skip-existing: true
 
     - name: Create GitHub Release and Upload Packages

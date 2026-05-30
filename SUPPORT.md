@@ -4,12 +4,9 @@ Thank you for using the **Firebase RTDB Lossless Restore Toolkit**! We want to e
 
 ---
 
-## 💬 GitHub Discussions (Recommended)
+## Questions and Setup Help
 
-For general questions, Q&A, setup assistance, or feature brainstorming, please use the **Discussions** tab:
-* 👉 [GitHub Discussions](https://github.com/berkayturanci/firebase-rtdb-restore/discussions)
-
-This is the best place to ask questions because other members of the community can benefit from the answers, and it keeps our Issue tracker focused strictly on actionable bugs and feature requests.
+GitHub Discussions are not currently enabled for this repository. For now, please open a question or feature request through the issue templates. Use the bug report template only for reproducible defects.
 
 ---
 

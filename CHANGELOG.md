@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+### Added
+- Package build and `twine check` verification in CI before release tags are cut.
+- Question issue template for setup and usage help while GitHub Discussions are disabled.
+- Additional package metadata URLs for repository, changelog, and documentation.
+
+### Changed
+- README PyPI badge now reflects the actual PyPI project state instead of a hard-coded version.
+- Support docs no longer point users to disabled GitHub Discussions.
+- Release workflow verifies package metadata before publishing to PyPI and creating a GitHub Release.
+
+---
+
 ## [0.2.0] - 2026-05-30
 ### Added
 - Shared `_common.py` module hosting the streaming JSON parser, node locator, service-account resolution, idempotent app init, retrying/recursive writes, and TTY-aware progress (removes duplication across the four CLIs).

@@ -3,7 +3,7 @@
 A simple, memory-efficient toolkit to restore large Firebase Realtime Database (RTDB) backups safely and without data loss.
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/berkayturanci/firebase-rtdb-restore)](https://github.com/berkayturanci/firebase-rtdb-restore/releases)
-[![PyPI version](https://img.shields.io/badge/pypi-v0.2.0-blue?logo=pypi)](https://pypi.org/project/firebase-rtdb-tools/)
+[![PyPI version](https://img.shields.io/pypi/v/firebase-rtdb-tools?logo=pypi)](https://pypi.org/project/firebase-rtdb-tools/)
 [![Run Tests](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml/badge.svg)](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -32,7 +32,7 @@ This toolkit solves these problems using four simple steps:
 
 ## Installation
 
-### Via PyPI (Recommended)
+### Via PyPI
 
 ```bash
 pip install firebase-rtdb-tools
@@ -44,12 +44,20 @@ This installs four simple command-line tools:
 * `firebase-rtdb-upload`
 * `firebase-rtdb-upload-single`
 
+If PyPI does not show the package yet, install from source until the next release workflow publishes successfully.
+
 ### From Source
 
 ```bash
 git clone https://github.com/berkayturanci/firebase-rtdb-restore.git
 cd firebase-rtdb-restore
 pip install -r requirements.txt
+```
+
+For local development, install the editable package with development tools:
+
+```bash
+pip install -e ".[dev]"
 ```
 
 ---
