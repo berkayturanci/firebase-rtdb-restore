@@ -14,7 +14,7 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-package-version="0.2.1">
     <!-- Background Glow Elements -->
     <div class="glow glow-1"></div>
     <div class="glow glow-2"></div>
@@ -59,9 +59,18 @@
                     <img src="https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml/badge.svg" alt="Run Tests Status">
                 </a>
                 <a href="https://pypi.org/project/firebase-rtdb-tools/" target="_blank">
-                    <img src="https://img.shields.io/badge/pypi-v0.1.10-blue?logo=pypi" alt="PyPI Version">
+                    <img src="https://img.shields.io/pypi/v/firebase-rtdb-tools?logo=pypi" alt="PyPI Version">
+                </a>
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/releases/latest" target="_blank">
+                    <img src="https://img.shields.io/github/v/release/berkayturanci/firebase-rtdb-restore?label=release&logo=github" alt="Latest GitHub Release">
                 </a>
                 <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+            </div>
+
+            <div class="release-links" aria-label="Release links">
+                <a href="https://pypi.org/project/firebase-rtdb-tools/" target="_blank">PyPI package</a>
+                <span>Current site version: <strong>0.2.1</strong></span>
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/releases/latest" target="_blank">Latest release</a>
             </div>
         </div>
     </section>
@@ -247,9 +256,9 @@
                                 Target Path: /users
                                 Chunks dir: ./chunks
                                 Chunks:     3
-                                Wipe first: YES — entire database root (/) will be wiped
+                                Wipe first: YES — target path (/users) will be wiped
 
-                                Wiping database root ... done
+                                Wiping /users ... done
 
                                   [   1/3]  33%  chunk_0000.json  req#1  (1000 entries, 3810 KB)   .
                                   [   2/3]  66%  chunk_0001.json  req#2  (1000 entries, 3844 KB)   .
@@ -349,7 +358,7 @@
                             <span>3. Upload Command</span>
                             <button onclick="copyGenCommand('gen-up')"><i class="fa-regular fa-copy"></i></button>
                         </div>
-                        <pre id="gen-up">make upload CHUNKS=./rtdb-chunks SA=serviceAccountKey.json PATH=/users</pre>
+                        <pre id="gen-up">make upload CHUNKS=./rtdb-chunks SA=serviceAccountKey.json DBPATH=/users</pre>
                     </div>
                 </div>
             </div>
