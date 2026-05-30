@@ -1,0 +1,65 @@
+name: 🐛 Bug Report
+description: Report a bug to help us improve the toolkit
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible to help us diagnose and fix the issue quickly.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug here...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Explain step-by-step how we can reproduce the behavior.
+      placeholder: |
+        1. Run command 'firebase-rtdb-split ...'
+        2. See error '...'
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe the expected behavior...
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? (Include complete stack traces or error logs if applicable).
+      placeholder: Describe the actual behavior or paste logs...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Please share relevant version numbers and configuration details.
+      placeholder: |
+        - OS: [e.g. macOS 14.5, Ubuntu 22.04]
+        - Python Version: [e.g. 3.10.12]
+        - firebase-admin Version: [e.g. 6.2.0]
+        - Toolkit Version: [e.g. 0.1.2]
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklists
+    attributes:
+      label: Checklists
+      description: Please confirm the following before submitting.
+      options:
+        - label: I have searched the existing issues and confirmed this is not a duplicate.
+          required: true
+        - label: I am using the latest version of the toolkit.
+          required: true
