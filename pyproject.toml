@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "firebase-rtdb-tools"
-version = "0.1.8"
+version = "0.1.9"
 description = "Firebase Realtime Database (RTDB) lossless restore toolkit for large backups"
 readme = "README.md"
 authors = [

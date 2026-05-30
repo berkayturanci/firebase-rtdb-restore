@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase RTDB Lossless Restore Toolkit</title>
+    <meta name="description" content="A stream-based, memory-efficient, OOM-safe toolkit to restore large Firebase Realtime Database (RTDB) backups losslessly.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Glow Elements -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fa-solid fa-database logo-icon"></i>
+                <span>RTDB Restore Toolkit</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#problem">The Problem</a>
+                <a href="#features">Features</a>
+                <a href="#guide">Interactive Guide</a>
+                <a href="#generator">Command Generator</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore" target="_blank" class="github-btn">
+                    <i class="fa-brands fa-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-container">
+            <h1 class="hero-title">Restore Large Firebase RTDB Backups <span class="gradient-text">Losslessly</span></h1>
+            <p class="hero-subtitle">A memory-efficient, stream-based Python toolkit designed to bypass console file-size limits, OOM crashes, and PUT overwrite traps.</p>
+            
+            <div class="install-container">
+                <span class="prompt">$</span>
+                <input type="text" id="install-cmd" value="pip install firebase-rtdb-tools" readonly>
+                <button class="copy-btn" onclick="copyInstallCommand()" id="copy-install-btn">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+
+            <div class="badges-row">
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml" target="_blank">
+                    <img src="https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml/badge.svg" alt="Run Tests Status">
+                </a>
+                <a href="https://pypi.org/project/firebase-rtdb-tools/" target="_blank">
+                    <img src="https://img.shields.io/pypi/v/firebase-rtdb-tools.svg" alt="PyPI Version">
+                </a>
+                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+            </div>
+        </div>
+    </section>
+
+    <!-- The Problem vs Solution Section -->
+    <section id="problem" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>The Overwrite Trap vs Lossless Restore</h2>
+                <p>Standard Firebase backup restoration methods fail when file sizes scale.</p>
+            </div>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card card-fail">
+                    <div class="card-glow"></div>
+                    <div class="card-header">
+                        <i class="fa-solid fa-triangle-exclamation card-icon"></i>
+                        <h3>Standard Console Import</h3>
+                    </div>
+                    <ul>
+                        <li><i class="fa-solid fa-xmark"></i> <strong>Overwrites Siblings:</strong> UI uses a full <code>PUT</code> operation, erasing all other data at the target node.</li>
+                        <li><i class="fa-solid fa-xmark"></i> <strong>REST Limit Block:</strong> Firebase limits payload sizes; giant backups are rejected.</li>
+                        <li><i class="fa-solid fa-xmark"></i> <strong>Out-Of-Memory (OOM):</strong> Loading multi-gigabyte JSON files in-memory crashes browser or scripts.</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card card-pass">
+                    <div class="card-glow"></div>
+                    <div class="card-header">
+                        <i class="fa-solid fa-circle-check card-icon"></i>
+                        <h3>Toolkit Lossless Restore</h3>
+                    </div>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> <strong>Additive Merging:</strong> Uses <code>PATCH</code> updates to safely integrate data without erasing existing records.</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Stream-Based:</strong> Processes files in tiny 128 KB chunks, keeping memory footprint &lt; 20 MB.</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Oversized Key Splitting:</strong> Automatically recurses into giant nodes, writing key-by-key.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section bg-glass">
+        <div class="container">
+            <div class="section-header">
+                <h2>Core Features</h2>
+                <p>Built with robustness, speed, and safety in mind for large-scale operations.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-bolt feature-icon"></i>
+                    <h3>Stream Splitting</h3>
+                    <p>Iteratively parses pretty-printed or minified JSON backups, writing N-user files without memory leaks.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-fingerprint feature-icon"></i>
+                    <h3>SHA-256 Validation</h3>
+                    <p>Losslessly checks and compares every fingerprint to guarantee that chunk files are an exact 100% split.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-network-wired feature-icon"></i>
+                    <h3>Size-Based Uploads</h3>
+                    <p>Accumulates entries into safe ≤ 4 MB batches, writing them in parallel to protect network buffer pipelines.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-shield-halved feature-icon"></i>
+                    <h3>Auto-Recovery</h3>
+                    <p>Encountered an oversized node? The single-user tool splits keys recursively so they fit within the limits.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Stepper Guide Section -->
+    <section id="guide" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Interactive Restore Workflow</h2>
+                <p>Step-by-step interactive simulator showing how the toolkit processes and uploads your backup.</p>
+            </div>
+
+            <div class="stepper-layout">
+                <div class="steps-nav">
+                    <div class="step-nav-item active" onclick="showStep(1)">
+                        <div class="step-num">1</div>
+                        <div class="step-label">Split Backup</div>
+                    </div>
+                    <div class="step-nav-item" onclick="showStep(2)">
+                        <div class="step-num">2</div>
+                        <div class="step-label">Validate Chunks</div>
+                    </div>
+                    <div class="step-nav-item" onclick="showStep(3)">
+                        <div class="step-num">3</div>
+                        <div class="step-label">Upload to RTDB</div>
+                    </div>
+                    <div class="step-nav-item" onclick="showStep(4)">
+                        <div class="step-num">4</div>
+                        <div class="step-label">Single Node Recovery</div>
+                    </div>
+                </div>
+
+                <div class="step-content-container">
+                    <!-- Step 1 content -->
+                    <div class="step-content active" id="step-1">
+                        <h3>Step 1: Stream-split the giant backup file</h3>
+                        <p>Reads the massive JSON backup in 128 KB blocks and splits it into smaller JSON chunk files (default 1,000 users per chunk).</p>
+                        <div class="code-block">
+                            <span class="prompt">$</span> firebase-rtdb-split backup.json -o ./chunks -n users -c 1000
+                        </div>
+                        <div class="console-box">
+                            <div class="console-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                                <span class="console-title">firebase-rtdb-split</span>
+                            </div>
+                            <div class="console-body" id="console-split">
+                                Input:      backup.json
+                                Output dir: ./chunks
+                                Chunk size: 1000 entries
+                                Split node: users
+
+                                  [2048 entries parsed | 100% read]
+                                  chunk_0000.json  (1000 entries)
+                                  chunk_0001.json  (1000 entries)
+                                  chunk_0002.json  (48 entries)
+
+                                Done: 2048 entries → 3 chunk files.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 content -->
+                    <div class="step-content" id="step-2">
+                        <h3>Step 2: Losslessly verify the split</h3>
+                        <p>Computes order-independent SHA-256 fingerprints of every entry in both the original file and the chunks, verifying 100% lossless parity.</p>
+                        <div class="code-block">
+                            <span class="prompt">$</span> firebase-rtdb-validate backup.json ./chunks -n users
+                        </div>
+                        <div class="console-box">
+                            <div class="console-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                                <span class="console-title">firebase-rtdb-validate</span>
+                            </div>
+                            <div class="console-body">
+                                Loading chunks: 3/3 — 2048 entries loaded
+                                Streaming original: 2048 entries | 100% read
+                                ───────────────────────────────────────────────────────
+                                  Original entries : 2,048
+                                  Chunk entries    : 2,048
+                                ───────────────────────────────────────────────────────
+                                  OK    No duplicate keys across chunks
+                                  OK    All original entries present in chunks
+                                  OK    No extra keys in chunks
+                                  OK    All values match exactly (SHA-256 verified)
+                                ───────────────────────────────────────────────────────
+                                  RESULT: <span class="text-success">PASSED</span> — chunks are a 100% lossless split!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 content -->
+                    <div class="step-content" id="step-3">
+                        <h3>Step 3: Upload chunks in size-based batches</h3>
+                        <p>Uploads the validated chunks using additive <code>PATCH</code> operations. Enforces a maximum payload limit of 4 MB per request to ensure safety.</p>
+                        <div class="code-block">
+                            <span class="prompt">$</span> firebase-rtdb-upload ./chunks -p /users --wipe
+                        </div>
+                        <div class="console-box">
+                            <div class="console-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                                <span class="console-title">firebase-rtdb-upload</span>
+                            </div>
+                            <div class="console-body">
+                                Project:    production-db
+                                Database:   https://production-db.firebaseio.com
+                                Target Path: /users
+                                Chunks dir: ./chunks
+                                Chunks:     3
+                                Wipe first: YES — entire database root (/) will be wiped
+
+                                Wiping database root ... done
+
+                                  [   1/3]  33%  chunk_0000.json  req#1  (1000 entries, 3810 KB)   .
+                                  [   2/3]  66%  chunk_0001.json  req#2  (1000 entries, 3844 KB)   .
+                                  [   3/3] 100%  chunk_0002.json  req#3  (48 entries, 185 KB)     .
+
+                                Done in 0m14s
+                                  Uploaded: 2048 entries across 3 chunks
+                                Restore complete. Verify in Firebase Console.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 content -->
+                    <div class="step-content" id="step-4">
+                        <h3>Step 4: Handle giant individual nodes recursively</h3>
+                        <p>If a specific user/record exceeds 4 MB on its own, this tool recursively splits the record into sub-keys and uploads them one-by-one.</p>
+                        <div class="code-block">
+                            <span class="prompt">$</span> firebase-rtdb-upload-single oversized_uid ./chunks/chunk_0000.json -p /users
+                        </div>
+                        <div class="console-box">
+                            <div class="console-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                                <span class="console-title">firebase-rtdb-upload-single</span>
+                            </div>
+                            <div class="console-body">
+                                Project : production-db
+                                Key     : oversized_uid
+                                Size    : 18.4 MB
+                                Sub-keys: 4
+
+                                  /name  (0 KB) ... done
+                                  /profile_settings  (210 KB) ... done
+                                  /analytics_logs  (18.1 MB) ... splitting (24 sub-keys)
+                                    /analytics_logs/logs_a  (2400 KB) ... done
+                                    /analytics_logs/logs_b  (3100 KB) ... done
+                                    ...
+                                  /role  (0 KB) ... done
+
+                                Entry 'oversized_uid' fully restored under /users/oversized_uid.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive CLI Command Generator Section -->
+    <section id="generator" class="section bg-glass">
+        <div class="container">
+            <div class="section-header">
+                <h2>CLI Command Generator</h2>
+                <p>Customize the parameters below to dynamically generate the exact commands you need for your restoration.</p>
+            </div>
+
+            <div class="generator-layout">
+                <div class="gen-form">
+                    <div class="form-group">
+                        <label for="p-backup">Backup File Name</label>
+                        <input type="text" id="p-backup" value="my_rtdb_backup.json" oninput="generateCommands()">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-chunks">Chunks Output Directory</label>
+                        <input type="text" id="p-chunks" value="./rtdb-chunks" oninput="generateCommands()">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-node">Target Root Node / Key</label>
+                        <input type="text" id="p-node" value="users" oninput="generateCommands()">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-sa">Service Account File Name</label>
+                        <input type="text" id="p-sa" value="serviceAccountKey.json" oninput="generateCommands()">
+                    </div>
+                </div>
+
+                <div class="gen-output">
+                    <div class="output-block">
+                        <div class="output-header">
+                            <span>1. Split Command</span>
+                            <button onclick="copyGenCommand('gen-split')"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <pre id="gen-split">make split BACKUP=my_rtdb_backup.json CHUNKS=./rtdb-chunks NODE=users</pre>
+                    </div>
+
+                    <div class="output-block">
+                        <div class="output-header">
+                            <span>2. Validate Command</span>
+                            <button onclick="copyGenCommand('gen-val')"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <pre id="gen-val">make validate BACKUP=my_rtdb_backup.json CHUNKS=./rtdb-chunks NODE=users</pre>
+                    </div>
+
+                    <div class="output-block">
+                        <div class="output-header">
+                            <span>3. Upload Command</span>
+                            <button onclick="copyGenCommand('gen-up')"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <pre id="gen-up">make upload CHUNKS=./rtdb-chunks SA=serviceAccountKey.json PATH=/users</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-left">
+                <p>&copy; 2026 Berkay Turanci. Released under the MIT License.</p>
+            </div>
+            <div class="footer-right">
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore" target="_blank"><i class="fa-brands fa-github"></i> Repository</a>
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a>
+                <a href="https://github.com/berkayturanci/firebase-rtdb-restore/blob/main/CODE_OF_CONDUCT.md" target="_blank">Conduct</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Script -->
+    <script src="app.js"></script>
+</body>
+</html>
