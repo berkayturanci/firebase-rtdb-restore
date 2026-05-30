@@ -289,6 +289,60 @@ class TestRestoreToolkit(unittest.TestCase):
         self.assertEqual(mock_user_ref.child.call_count, 3)
         self.assertEqual(mock_user_ref.child().set.call_count, 3)
 
+    def test_upload_chunks_wipe_abort(self):
+        """Declining the wipe confirmation aborts cleanly without deleting or writing."""
+        split_backup(self.backup_file, self.chunks_dir, chunk_size=2, node_key="users")
+
+        mock_target_ref = MagicMock()
+        mock_db.reference.return_value = mock_target_ref
+
+        sa_file = self._write_service_account()
+
+        with patch("builtins.input", return_value="no"), self.assertRaises(SystemExit) as cm:
+            upload_chunks(
+                chunks_dir=self.chunks_dir,
+                sa_path=sa_file,
+                target_path="/users",
+                do_wipe=True,
+            )
+
+        self.assertEqual(cm.exception.code, 0)
+        mock_target_ref.delete.assert_not_called()
+        mock_target_ref.update.assert_not_called()
+
+    def test_upload_chunks_missing_service_account(self):
+        """A non-existent service-account path fails fast with exit code 1."""
+        split_backup(self.backup_file, self.chunks_dir, chunk_size=2, node_key="users")
+
+        with self.assertRaises(SystemExit) as cm:
+            upload_chunks(
+                chunks_dir=self.chunks_dir,
+                sa_path=os.path.join(self.test_dir, "does_not_exist.json"),
+                target_path="/users",
+            )
+
+        self.assertEqual(cm.exception.code, 1)
+
+    def test_init_app_uses_custom_database_url(self):
+        """A custom --database-url is passed through to initialize_app verbatim."""
+        sa_file = self._write_service_account()
+        custom_url = "https://custom-db.europe-west1.firebasedatabase.app"
+
+        _sa, db_url = _common.init_app(sa_file, database_url=custom_url)
+
+        self.assertEqual(db_url, custom_url)
+        # initialize_app(cred, {"databaseURL": <url>}) — verify the options dict.
+        options = mock_firebase_admin.initialize_app.call_args[0][1]
+        self.assertEqual(options["databaseURL"], custom_url)
+
+    def test_init_app_defaults_database_url_from_project_id(self):
+        """Without an override the database URL is derived from the project id."""
+        sa_file = self._write_service_account()
+
+        _sa, db_url = _common.init_app(sa_file)
+
+        self.assertEqual(db_url, "https://test-project-123.firebaseio.com")
+
 
 class TestCommonHelpers(unittest.TestCase):
     def test_recursive_write_splits_oversized_dict(self):
