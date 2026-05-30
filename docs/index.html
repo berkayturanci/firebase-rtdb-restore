@@ -86,7 +86,7 @@
 
             <div class="release-links" aria-label="Release links">
                 <a href="https://pypi.org/project/firebase-rtdb-tools/" target="_blank">PyPI package</a>
-                <span>Current site version: <strong>0.2.2</strong></span>
+                <span>Current site version: <strong id="site-version">0.2.2</strong></span>
                 <a href="https://github.com/berkayturanci/firebase-rtdb-restore/releases/latest" target="_blank">Latest release</a>
             </div>
         </div>
@@ -437,6 +437,20 @@
     </footer>
 
     <!-- Custom Script -->
+    <script>
+      // Keep the displayed version in sync with the latest published release automatically.
+      // The server-rendered number (and data-package-version, guarded in CI) is the fallback.
+      (function () {
+        var el = document.getElementById('site-version');
+        if (!el) return;
+        fetch('https://api.github.com/repos/berkayturanci/firebase-rtdb-restore/releases/latest', {
+          headers: { Accept: 'application/vnd.github+json' }
+        })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) { if (d && d.tag_name) el.textContent = d.tag_name.replace(/^v/, ''); })
+          .catch(function () { /* keep the server-rendered version on failure */ });
+      })();
+    </script>
     <script src="app.js"></script>
 </body>
 </html>
