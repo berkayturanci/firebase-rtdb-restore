@@ -39,12 +39,35 @@ jobs:
         password: ${{ secrets.PYPI_API_TOKEN }}
         skip-existing: true
 
+    # The release-integrity artifacts below are written to artifacts/ — never
+    # dist/ — so the PyPI upload above only ever receives the wheel and sdist.
+    - name: Generate checksums for release artifacts
+      run: |
+        mkdir -p artifacts
+        # Hash bare filenames (run from dist/) so `sha256sum -c SHA256SUMS`
+        # works after downloading the release assets into one directory.
+        ( cd dist && sha256sum *.whl *.tar.gz ) > artifacts/SHA256SUMS
+        echo "Published artifact checksums:"
+        cat artifacts/SHA256SUMS
+
+    - name: Generate SBOM (CycloneDX)
+      run: |
+        python -m pip install "cyclonedx-bom>=4,<5"
+        python -m venv /tmp/pkgenv
+        /tmp/pkgenv/bin/pip install --upgrade pip
+        /tmp/pkgenv/bin/pip install dist/*.whl
+        mkdir -p artifacts
+        cyclonedx-py environment /tmp/pkgenv/bin/python --output-format JSON --outfile artifacts/sbom.cdx.json
+        ls -la artifacts
+
     - name: Create GitHub Release and Upload Packages
       uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191  # v2.0.5 (pinned 2026-05-30)
       with:
         files: |
           dist/*.whl
           dist/*.tar.gz
+          artifacts/SHA256SUMS
+          artifacts/sbom.cdx.json
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
