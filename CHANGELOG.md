@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [0.2.2] - 2026-05-31
 ### Added
 - Release artifact integrity: the publish workflow now attaches a `SHA256SUMS` checksum file and a CycloneDX SBOM (`sbom.cdx.json`) to each GitHub Release; `SECURITY.md` documents how to verify downloads. These artifacts are written to `artifacts/` so the PyPI upload still receives only the wheel and sdist.
+- Version-sync test (`tests/test_version_sync.py`) that fails CI if `firebase_rtdb_restore.__version__`, `pyproject.toml`, and the `CHANGELOG.md` section drift apart (the documentation-site version is already guarded by `scripts/check_docs_site.py`).
 
 ### Changed
 - Bumped pinned GitHub Actions to current majors: `actions/checkout` v6.0.2, `actions/setup-python` v6.2.0, `actions/upload-artifact` v7.0.1, and `softprops/action-gh-release` v3.0.0 (all Node 24 runtime; no workflow input changes).
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Favicon, web manifest, canonical URL, Open Graph metadata, and Twitter card metadata for the documentation site.
 
 ### Fixed
+- Synced `firebase_rtdb_restore.__version__` (was `0.2.0`) with `pyproject.toml` and the documentation site so all version metadata reports the same release.
 - README and documentation site PyPI badges now use an explicit stable Shields endpoint.
 - Documentation site PyPI badge now uses the live PyPI version instead of a hard-coded historical version.
 - Documentation site command generator now uses the current `DBPATH` make variable.
