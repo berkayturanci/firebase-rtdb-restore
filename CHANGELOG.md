@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Release artifact integrity: the publish workflow now attaches a `SHA256SUMS` checksum file and a CycloneDX SBOM (`sbom.cdx.json`) to each GitHub Release; `SECURITY.md` documents how to verify downloads. These artifacts are written to `artifacts/` so the PyPI upload still receives only the wheel and sdist.
 - Full operational documentation: a production restore runbook (`docs/runbook.md`), a complete CLI & API reference (`docs/cli.md`), and a release process / versioning policy (`docs/release-process.md`) — replacing the previous stub pages and resolving the README/docs-site links to them.
 - Supply-chain security automation: Dependabot (pip + GitHub Actions), a CodeQL code-scanning workflow, and an OpenSSF Scorecard workflow — all third-party actions pinned to commit SHAs with least-privilege permissions.
 - `examples/` directory with a synthetic `sample-backup.json` and a step-by-step walkthrough (split, validate, tamper-detection, and dry-run upload commands) so users can practice safely without real Firebase data.
