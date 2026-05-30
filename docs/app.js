@@ -79,7 +79,7 @@ function generateCommands() {
 
     // Generate Upload Command
     document.getElementById('gen-up').innerText = 
-        `make upload CHUNKS=${chunks} SA=${sa} PATH=/${node}`;
+        `make upload CHUNKS=${chunks} SA=${sa} DBPATH=/${node}`;
 }
 
 // Initial generation run on load
