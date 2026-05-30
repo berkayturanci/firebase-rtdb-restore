@@ -9,14 +9,6 @@ import os
 import sys
 import time
 
-try:
-    import firebase_admin
-    from firebase_admin import credentials, db
-except ImportError:
-    print("firebase-admin not installed. Run:")
-    print("  pip3 install firebase-admin")
-    sys.exit(1)
-
 
 def _send_batch(ref, batch, fname, req_num):
     try:
@@ -44,6 +36,13 @@ def _send_giant_entry(ref, key, val, fname, req_num, max_batch_bytes):
 
 
 def upload_chunks(chunks_dir, sa_path, target_path, do_wipe, database_url=None):
+    try:
+        import firebase_admin
+        from firebase_admin import credentials, db
+    except ImportError:
+        print("ERROR: firebase-admin not installed. Run: pip3 install firebase-admin")
+        sys.exit(1)
+
     if not os.path.isdir(chunks_dir):
         print(f"ERROR: Chunks directory not found: {chunks_dir}")
         sys.exit(1)

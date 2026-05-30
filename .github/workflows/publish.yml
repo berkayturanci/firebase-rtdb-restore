@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Publish to PyPI & GitHub Release
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
 
 jobs:
   build-n-publish:
-    name: Build and publish Python distribution to PyPI
+    name: Build, Publish to PyPI, and Create GitHub Release
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for OIDC trusted publishing
-      contents: read   # Required for actions/checkout
+      id-token: write  # Required for OIDC trusted publishing on PyPI
+      contents: write  # Required for actions/checkout and creating GitHub Releases with assets
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2 (pinned 2026-05-30)
     
@@ -34,3 +34,16 @@ jobs:
         password: ${{ secrets.PYPI_API_TOKEN }}
         # Supports passwordless Trusted Publishing if secret is not set
         skip-existing: true
+
+    - name: Create GitHub Release and Upload Packages
+      uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191  # v2.0.5 (pinned 2026-05-30)
+      with:
+        files: |
+          dist/*.whl
+          dist/*.tar.gz
+        name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

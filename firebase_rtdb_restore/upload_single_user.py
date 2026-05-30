@@ -9,13 +9,6 @@ import json
 import os
 import sys
 
-try:
-    import firebase_admin
-    from firebase_admin import credentials, db
-except ImportError:
-    print("firebase-admin not installed. Run: pip3 install firebase-admin")
-    sys.exit(1)
-
 
 def write_ref(ref, value, path, max_bytes, depth=0):
     """Recursively write value to ref, splitting by sub-keys if too large."""
@@ -35,6 +28,13 @@ def write_ref(ref, value, path, max_bytes, depth=0):
 
 
 def upload_single_user(key, chunk_path, sa_path, parent_path, database_url=None):
+    try:
+        import firebase_admin
+        from firebase_admin import credentials, db
+    except ImportError:
+        print("ERROR: firebase-admin not installed. Run: pip3 install firebase-admin")
+        sys.exit(1)
+
     if not os.path.exists(chunk_path):
         print(f"ERROR: Chunk file not found: {chunk_path}")
         sys.exit(1)
