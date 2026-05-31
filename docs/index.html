@@ -42,17 +42,20 @@
                 <i class="fa-solid fa-database logo-icon"></i>
                 <span>RTDB Restore Toolkit</span>
             </a>
-            <nav class="nav-links">
-                <a href="#problem">The Problem</a>
-                <a href="#features">Features</a>
-                <a href="#documentation">Documentation</a>
-                <a href="#guide">Interactive Guide</a>
-                <a href="#generator">Command Generator</a>
+            <nav class="nav-links" id="nav-links">
+                <a href="#problem" onclick="closeNav()">The Problem</a>
+                <a href="#features" onclick="closeNav()">Features</a>
+                <a href="#documentation" onclick="closeNav()">Documentation</a>
+                <a href="#guide" onclick="closeNav()">Interactive Guide</a>
+                <a href="#generator" onclick="closeNav()">Command Generator</a>
             </nav>
             <div class="nav-actions">
                 <a href="https://github.com/berkayturanci/firebase-rtdb-restore" target="_blank" class="github-btn">
                     <i class="fa-brands fa-github"></i> GitHub
                 </a>
+                <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links" onclick="toggleNav()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
