@@ -128,6 +128,32 @@ header {
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
 }
 
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Hamburger toggle — hidden on desktop, shown on mobile */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    font-size: 1.15rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.nav-toggle:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
 /* Sections */
 .container {
     max-width: 1200px;
@@ -273,6 +299,8 @@ header {
 
 .badges-row {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1rem;
     align-items: center;
 }
@@ -571,6 +599,8 @@ header {
     display: flex;
     gap: 0.5rem;
     box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.3);
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .code-block .prompt {
@@ -618,6 +648,7 @@ header {
 .console-body {
     padding: 1.25rem;
     white-space: pre-line;
+    overflow-x: auto;
     color: #e6edf3;
     line-height: 1.6;
 }
@@ -778,21 +809,111 @@ footer {
 }
 
 @media (max-width: 768px) {
+    .nav-container {
+        padding: 1rem 1.25rem;
+    }
+    .container {
+        padding: 0 1.25rem;
+    }
+    .section {
+        padding: 4rem 0;
+    }
+    .section-header {
+        margin-bottom: 3rem;
+    }
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    .section-header p {
+        font-size: 1.05rem;
+    }
+    .hero-section {
+        padding: 8rem 0 4rem 0;
+    }
     .hero-title {
         font-size: 2.5rem;
     }
+    .hero-subtitle {
+        font-size: 1.15rem;
+        margin-bottom: 2rem;
+    }
     .comparison-grid {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
-    .nav-links {
-        display: none;
+    .comparison-card {
+        padding: 2rem;
+    }
+    .step-content-container {
+        padding: 2rem 1.5rem;
+    }
+    .features-grid {
+        grid-template-columns: 1fr;
     }
     .footer-container {
         flex-direction: column;
         gap: 1.5rem;
         text-align: center;
     }
-    .features-grid {
-        grid-template-columns: 1fr;
+    .footer-right {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+    }
+
+    /* Hamburger menu */
+    .nav-toggle {
+        display: inline-flex;
+    }
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgba(11, 15, 25, 0.98);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-glass);
+        padding: 0.5rem 0;
+        max-height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        transition: max-height 0.3s ease, visibility 0.3s ease;
+    }
+    .nav-links.open {
+        max-height: 80vh;
+        visibility: visible;
+    }
+    .nav-links a {
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+        border-bottom: 1px solid var(--border-glass);
+    }
+    .nav-links a:last-child {
+        border-bottom: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+    }
+    .section-header h2 {
+        font-size: 1.65rem;
+    }
+    .step-content h3 {
+        font-size: 1.4rem;
+    }
+    .card-header h3 {
+        font-size: 1.35rem;
+    }
+    .logo span {
+        font-size: 1.1rem;
+    }
+    .github-btn span,
+    .github-btn {
+        font-size: 0.85rem;
     }
 }

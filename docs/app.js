@@ -1,3 +1,23 @@
+// Mobile Navigation Toggle
+function toggleNav() {
+    const navLinks = document.getElementById('nav-links');
+    const navToggle = document.getElementById('nav-toggle');
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    navToggle.innerHTML = isOpen
+        ? '<i class="fa-solid fa-xmark"></i>'
+        : '<i class="fa-solid fa-bars"></i>';
+}
+
+function closeNav() {
+    const navLinks = document.getElementById('nav-links');
+    const navToggle = document.getElementById('nav-toggle');
+    if (!navLinks || !navLinks.classList.contains('open')) return;
+    navLinks.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+}
+
 // Stepper Tab Switcher
 function showStep(stepNumber) {
     // Hide all step content
