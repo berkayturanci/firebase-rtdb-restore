@@ -8,11 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 ## [Unreleased]
+
+---
+
+## [0.2.3] - 2026-05-31
 ### Added
 - README hero banner (`docs/hero-banner.svg`) — an on-brand vector banner (matches the favicon flame + database motif) with crisp, correctly-spelled title text and a split → verify → restore pipeline illustration.
 
 ### Changed
 - The documentation site's "Current site version" now updates automatically from the latest GitHub release via a small client-side fetch, falling back to the server-rendered value (the CI-guarded `data-package-version` is unchanged).
+
+### Fixed
+- Documentation site is now mobile responsive: added a hamburger navigation menu (links were previously hidden with no replacement below 768px), made console output and code blocks scroll horizontally instead of overflowing the viewport, wrapped the badge row, and tuned spacing/typography with an added 480px breakpoint.
 
 ---
 
