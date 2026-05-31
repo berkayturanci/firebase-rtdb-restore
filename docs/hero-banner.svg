@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" role="img" aria-label="Firebase RTDB Restore Toolkit — stream-split, verify, and losslessly restore large Firebase Realtime Database backups">
+  <defs>
+    <linearGradient id="flame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffca28"/>
+      <stop offset="0.45" stop-color="#f58220"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="db" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.18" cy="0.1" r="0.8">
+      <stop offset="0" stop-color="#f58220" stop-opacity="0.20"/>
+      <stop offset="0.5" stop-color="#8b5cf6" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#0b0f19" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="1280" height="360" rx="0" fill="#0b0f19"/>
+  <rect width="1280" height="360" fill="url(#glow)"/>
+  <!-- faint grid dots -->
+  <g fill="#1f2937">
+    <circle cx="1180" cy="40" r="2"/><circle cx="1220" cy="40" r="2"/><circle cx="1140" cy="40" r="2"/>
+    <circle cx="1180" cy="80" r="2"/><circle cx="1220" cy="80" r="2"/><circle cx="1140" cy="80" r="2"/>
+    <circle cx="60" cy="300" r="2"/><circle cx="100" cy="300" r="2"/><circle cx="140" cy="300" r="2"/>
+    <circle cx="60" cy="330" r="2"/><circle cx="100" cy="330" r="2"/><circle cx="140" cy="330" r="2"/>
+  </g>
+
+  <!-- brand badge (flame + database), matches favicon -->
+  <g transform="translate(72,104)">
+    <rect width="152" height="152" rx="30" fill="#111827" stroke="#1f2937" stroke-width="1.5"/>
+    <g transform="translate(28,24) scale(1.5)">
+      <path d="M17 44 27 9l7 19 6-10 7 26-15 9-15-9Z" fill="url(#flame)"/>
+      <path d="M20 42h24v6c0 4-24 4-24 0v-6Z" fill="#10b981"/>
+      <ellipse cx="32" cy="42" rx="12" ry="4" fill="#34d399"/>
+      <path d="M25 35h14M25 29h9" stroke="#f9fafb" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- title -->
+  <text x="256" y="150" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="56" font-weight="800" fill="#f9fafb" letter-spacing="-1">Firebase RTDB</text>
+  <text x="256" y="214" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="56" font-weight="800" fill="url(#flame)" letter-spacing="-1">Restore Toolkit</text>
+
+  <!-- tagline -->
+  <text x="258" y="256" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" fill="#9ca3af">Stream-split, verify &amp; losslessly restore huge RTDB backups.</text>
+
+  <!-- install pill (monospace) + lossless pill -->
+  <g transform="translate(258,284)">
+    <rect width="330" height="34" rx="17" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="18" y="22" font-family="'SFMono-Regular',Consolas,'Liberation Mono',monospace" font-size="15" fill="#cbd5e1">pip install firebase-rtdb-tools</text>
+    <g transform="translate(348,0)">
+      <rect width="168" height="34" rx="17" fill="#10b98122" stroke="#10b981" stroke-width="1"/>
+      <path d="M16 17l5 5 9-10" fill="none" stroke="#34d399" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="38" y="22" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="14" font-weight="600" fill="#34d399">SHA-256 lossless</text>
+    </g>
+  </g>
+
+  <!-- right-side pipeline: backup -> chunks -> database -->
+  <g transform="translate(0,0)" font-family="'SFMono-Regular',Consolas,monospace">
+    <!-- backup document -->
+    <rect x="862" y="118" width="92" height="120" rx="12" fill="#0f172a" stroke="#f58220" stroke-width="2"/>
+    <g stroke="#475569" stroke-width="3" stroke-linecap="round">
+      <path d="M880 150h56"/><path d="M880 170h56"/><path d="M880 190h40"/><path d="M880 210h48"/>
+    </g>
+    <text x="908" y="258" font-size="12" fill="#64748b" text-anchor="middle">backup.json</text>
+
+    <!-- arrow -->
+    <path d="M962 178h34" stroke="#f58220" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M992 172l8 6-8 6" fill="none" stroke="#f58220" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- chunks (stacked) -->
+    <rect x="1008" y="146" width="70" height="30" rx="7" fill="#111827" stroke="#34d399" stroke-width="1.6"/>
+    <rect x="1016" y="170" width="70" height="30" rx="7" fill="#111827" stroke="#34d399" stroke-width="1.6"/>
+    <rect x="1024" y="194" width="70" height="30" rx="7" fill="#0f1b16" stroke="#34d399" stroke-width="1.6"/>
+    <text x="1059" y="258" font-size="12" fill="#64748b" text-anchor="middle">chunks</text>
+
+    <!-- arrow -->
+    <path d="M1102 196h26" stroke="#34d399" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M1124 190l8 6-8 6" fill="none" stroke="#34d399" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- database cylinder -->
+    <g transform="translate(1140,150)">
+      <path d="M0 12 a40 12 0 0 1 80 0 v56 a40 12 0 0 1 -80 0 Z" fill="url(#db)"/>
+      <ellipse cx="40" cy="12" rx="40" ry="12" fill="#34d399"/>
+      <path d="M28 40l9 9 17-19" fill="none" stroke="#06281d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="1180" y="258" font-size="12" fill="#64748b" text-anchor="middle">RTDB</text>
+  </g>
+</svg>

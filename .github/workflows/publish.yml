@@ -13,10 +13,10 @@ jobs:
       id-token: write  # Required for OIDC trusted publishing on PyPI
       contents: write  # Required for actions/checkout and creating GitHub Releases with assets
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2 (pinned 2026-05-30)
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2 (pinned 2026-05-31)
     
     - name: Set up Python
-      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f  # v5.1.1 (pinned 2026-05-30)
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0 (pinned 2026-05-31)
       with:
         python-version: '3.10'
         
@@ -33,18 +33,44 @@ jobs:
         pip install twine
         twine check dist/*
       
+    # OIDC Trusted Publishing: no API token. The id-token: write permission
+    # above lets the action mint a short-lived credential, and PEP 740
+    # attestations are produced automatically (they are disabled when an
+    # explicit password is used).
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1.14.0 (pinned 2026-05-30)
       with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
         skip-existing: true
 
+    # The release-integrity artifacts below are written to artifacts/ — never
+    # dist/ — so the PyPI upload above only ever receives the wheel and sdist.
+    - name: Generate checksums for release artifacts
+      run: |
+        mkdir -p artifacts
+        # Hash bare filenames (run from dist/) so `sha256sum -c SHA256SUMS`
+        # works after downloading the release assets into one directory.
+        ( cd dist && sha256sum *.whl *.tar.gz ) > artifacts/SHA256SUMS
+        echo "Published artifact checksums:"
+        cat artifacts/SHA256SUMS
+
+    - name: Generate SBOM (CycloneDX)
+      run: |
+        python -m pip install "cyclonedx-bom>=4,<5"
+        python -m venv /tmp/pkgenv
+        /tmp/pkgenv/bin/pip install --upgrade pip
+        /tmp/pkgenv/bin/pip install dist/*.whl
+        mkdir -p artifacts
+        cyclonedx-py environment /tmp/pkgenv/bin/python --output-format JSON --outfile artifacts/sbom.cdx.json
+        ls -la artifacts
+
     - name: Create GitHub Release and Upload Packages
-      uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191  # v2.0.5 (pinned 2026-05-30)
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda  # v3.0.0 (pinned 2026-05-31)
       with:
         files: |
           dist/*.whl
           dist/*.tar.gz
+          artifacts/SHA256SUMS
+          artifacts/sbom.cdx.json
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false

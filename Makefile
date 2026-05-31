@@ -1,4 +1,4 @@
-.PHONY: help install test lint format build clean split validate upload upload-wipe upload-wipe-root upload-single
+.PHONY: help install test lint format build check clean split validate upload upload-wipe upload-wipe-root upload-single
 
 # Default parameters
 BACKUP ?= backup.json
@@ -15,6 +15,7 @@ help:
 	@echo "  make lint            - Run linter (Ruff) to check code quality"
 	@echo "  make format          - Run formatter (Ruff) to clean up code styling"
 	@echo "  make build           - Compile sdist and wheel packages locally"
+	@echo "  make check           - Run the full local gate (lint + tests + build + twine check)"
 	@echo "  make clean           - Remove build artifacts, cache files, and temp files"
 	@echo ""
 	@echo "Restore Workflow:"
@@ -40,6 +41,10 @@ format:
 
 build:
 	python3 -m build --sdist --wheel --outdir dist/
+
+# Mirror the CI gates locally: lint, unit tests, package build, metadata check.
+check: lint test build
+	python3 -m twine check dist/*
 
 clean:
 	rm -rf build/ dist/ *.egg-info/ .ruff_cache/

@@ -9,11 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- README hero banner (`docs/hero-banner.svg`) — an on-brand vector banner (matches the favicon flame + database motif) with crisp, correctly-spelled title text and a split → verify → restore pipeline illustration.
+
+### Changed
+- The documentation site's "Current site version" now updates automatically from the latest GitHub release via a small client-side fetch, falling back to the server-rendered value (the CI-guarded `data-package-version` is unchanged).
+
+---
+
+## [0.2.2] - 2026-05-31
+### Added
+- Release artifact integrity: the publish workflow now attaches a `SHA256SUMS` checksum file and a CycloneDX SBOM (`sbom.cdx.json`) to each GitHub Release; `SECURITY.md` documents how to verify downloads. These artifacts are written to `artifacts/` so the PyPI upload still receives only the wheel and sdist.
+- Version-sync test (`tests/test_version_sync.py`) that fails CI if `firebase_rtdb_restore.__version__`, `pyproject.toml`, and the `CHANGELOG.md` section drift apart (the documentation-site version is already guarded by `scripts/check_docs_site.py`).
+
+### Changed
+- Bumped pinned GitHub Actions to current majors: `actions/checkout` v6.0.2, `actions/setup-python` v6.2.0, `actions/upload-artifact` v7.0.1, and `softprops/action-gh-release` v3.0.0 (all Node 24 runtime; no workflow input changes).
+- PyPI releases now authenticate via OIDC Trusted Publishing instead of a stored `PYPI_API_TOKEN`; with no explicit password the publish action also emits PEP 740 attestations. Release authentication is documented in `docs/release-process.md`.
+- Full operational documentation: a production restore runbook (`docs/runbook.md`), a complete CLI & API reference (`docs/cli.md`), and a release process / versioning policy (`docs/release-process.md`) — replacing the previous stub pages and resolving the README/docs-site links to them.
+- Supply-chain security automation: Dependabot (pip + GitHub Actions), a CodeQL code-scanning workflow, and an OpenSSF Scorecard workflow — all third-party actions pinned to commit SHAs with least-privilege permissions.
+- `examples/` directory with a synthetic `sample-backup.json` and a step-by-step walkthrough (split, validate, tamper-detection, and dry-run upload commands) so users can practice safely without real Firebase data.
+- `make check` target that mirrors the CI gates locally (lint + tests + build + `twine check`); `twine` added to the `dev` extra.
+- Contributor docs: `CONTRIBUTING.md` now documents `pip install -e ".[dev]"`, the full local validation sequence, and the required CI checks; PR template references `make check`.
 - Documentation site release guard that checks the site version signal against `pyproject.toml`.
 - Live GitHub Release badge/link on the documentation site.
 - Favicon, web manifest, canonical URL, Open Graph metadata, and Twitter card metadata for the documentation site.
 
 ### Fixed
+- Synced `firebase_rtdb_restore.__version__` (was `0.2.0`) with `pyproject.toml` and the documentation site so all version metadata reports the same release.
 - README and documentation site PyPI badges now use an explicit stable Shields endpoint.
 - Documentation site PyPI badge now uses the live PyPI version instead of a hard-coded historical version.
 - Documentation site command generator now uses the current `DBPATH` make variable.

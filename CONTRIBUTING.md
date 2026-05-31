@@ -37,12 +37,16 @@ If you would like to contribute code changes:
    ```
 2. Set up a local development environment (see below).
 3. Implement your changes. Make sure your code is clean and follows standard Python formatting guidelines.
-4. Run syntax checks and write tests if applicable:
-   ```bash
-   python3 -m py_compile firebase_rtdb_restore/*.py
-   ```
+4. Run the full local validation gate before pushing (see [Validating your changes](#validating-your-changes)).
 5. Commit your changes with clear, descriptive commit messages.
 6. Push your branch to your fork and submit a Pull Request to our `main` branch.
+7. Update documentation alongside behavior changes — README, `examples/`, the
+   docs site under `docs/`, and `CHANGELOG.md` where relevant.
+
+The `main` branch requires every pull request to pass CI before it can merge:
+Ruff lint, the unit-test matrix (Python 3.8–3.13), the package build/metadata
+check, and the documentation-site check. Running `make check` locally reproduces
+the code gates so you don't have to wait on CI to catch a lint or test failure.
 
 ---
 
@@ -60,14 +64,50 @@ To set up a local development environment for testing and editing:
    python3 -m venv venv
    source venv/bin/activate
    ```
-3. Install the package in editable mode with development tools:
+3. Install the package in editable mode **with the development tools**:
    ```bash
-   pip install -e .
+   pip install -e ".[dev]"
    ```
-4. Verify the entry points work locally:
+   This pulls in Ruff, `build`, `twine`, and `pre-commit` in addition to the
+   runtime dependencies.
+4. (Optional) install the git hooks:
+   ```bash
+   pre-commit install
+   ```
+5. Verify the entry points work locally:
    ```bash
    firebase-rtdb-split --help
    ```
+
+---
+
+## Validating your changes
+
+Run the same gates CI enforces. The quickest path is the bundled target:
+
+```bash
+make check        # ruff check + unit tests + build + twine check
+```
+
+Or run them individually:
+
+```bash
+make lint                                         # ruff check .
+make test                                         # unit tests
+python3 -m build --sdist --wheel --outdir dist/   # packaging
+python3 -m twine check dist/*                     # package metadata
+```
+
+To try the toolkit end-to-end against safe, synthetic data, follow the
+walkthrough in [`examples/README.md`](examples/README.md).
+
+---
+
+## Reference documentation
+
+- [CLI & API Reference](docs/cli.md) — every command, flag, default, and exit code.
+- [Production Restore Runbook](docs/runbook.md) — safety checklist for real restores.
+- [Release Process & Versioning Policy](docs/release-process.md) — how versions are bumped and released.
 
 ---
 
