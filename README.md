@@ -9,6 +9,7 @@ A simple, memory-efficient toolkit to restore large Firebase Realtime Database (
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/berkayturanci/firebase-rtdb-restore)](https://github.com/berkayturanci/firebase-rtdb-restore/releases)
 [![PyPI](https://img.shields.io/pypi/v/firebase-rtdb-tools.svg?label=PyPI&logo=pypi&color=3775A9)](https://pypi.org/project/firebase-rtdb-tools/)
 [![Run Tests](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml/badge.svg)](https://github.com/berkayturanci/firebase-rtdb-restore/actions/workflows/tests.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/berkayturanci/firebase-rtdb-restore/badge)](https://scorecard.dev/viewer/?uri=github.com/berkayturanci/firebase-rtdb-restore)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
