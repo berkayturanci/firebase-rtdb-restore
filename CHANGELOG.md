@@ -135,7 +135,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2026-05-30
 ### Added
-- Initial standalone release of the Firebase RTDB Lossless Restore Toolkit extracted from `smartinventory`.
+- Initial standalone release of the Firebase RTDB Lossless Restore Toolkit, extracted from an internal project.
 - Support for CLI entry points (`firebase-rtdb-split`, `firebase-rtdb-validate`, `firebase-rtdb-upload`, `firebase-rtdb-upload-single`).
 - Premium setup documentation in `README.md`.
 - Automated PyPI publishing on tags via GitHub Actions.
